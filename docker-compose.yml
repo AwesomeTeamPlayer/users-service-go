@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  go-app:
+    build: .
+    ports:
+      - "1234:1234"
+    volumes:
+       - ./:/app
+       - /home/szymon/go:/go
+    links:
+      - mysql
+    environment:
+      APP_PORT: 1234
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: testdb
+
+  mysql:
+    image: mysql:8.0.3
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: testdb
