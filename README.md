@@ -1,5 +1,15 @@
 # user-service-go
 
+## To build:
+```bash
+go build -o=/app/run ./src/
+```
+
+## To run
+```bash
+/app/run
+```
+
 ## Available methods:
 
 ### App.AddUser
