@@ -1,4 +1,4 @@
-package src
+package server
 
 import (
 	"errors"
@@ -16,7 +16,12 @@ type EmailRequest struct {
 }
 
 type IdRequest struct {
-	Id uint
+	Id int
+}
+
+type UpdateUserNameRequest struct {
+	Id int
+	Name string
 }
 
 type GetAllUsersRequest struct {
@@ -37,6 +42,9 @@ func (t *App) AddUser (r *http.Request, userDraft *UserDraft, result *User) erro
 	if err != nil {
 		return errors.New("database error")
 	}
+
+	userCreated(user.Id)
+
 	*result = *user
 	return nil
 }
@@ -87,6 +95,30 @@ func (t *App) GetAllUsers (r *http.Request, getAllUsersRequest *GetAllUsersReque
 	return nil
 }
 
+func (t *App) UpdateName (r *http.Request, request *UpdateUserNameRequest, result *bool) error {
+	user, err := getUserById(request.Id)
+
+	if err != nil {
+		return errors.New("database error")
+	}
+
+	if user == nil {
+		return errors.New("user does not exist")
+	}
+
+	user.Name = request.Name
+
+	err = update(user)
+	if err != nil {
+		return errors.New("database error")
+	}
+
+	sendUserNameUpdatedEvent(user.Id)
+
+	*result = true
+	return nil
+}
+
 func (t *App) ActiveUser (r *http.Request, idRequest *IdRequest, result *bool) error {
 	user, err := getUserById(idRequest.Id)
 
@@ -103,10 +135,13 @@ func (t *App) ActiveUser (r *http.Request, idRequest *IdRequest, result *bool) e
 		return nil
 	}
 
-	err = updateIsActiveUser(idRequest.Id, true)
+	user.IsActive = true
+	err = update(user)
 	if err != nil {
 		return errors.New("database error")
 	}
+
+	sendUserActivatedEvent(user.Id)
 
 	*result = true
 	return nil
@@ -127,16 +162,19 @@ func (t *App) InactiveUser (r *http.Request, idRequest *IdRequest, result *bool)
 		return nil
 	}
 
-	err = updateIsActiveUser(idRequest.Id, false)
+	user.IsActive = false
+	err = update(user)
 	if err != nil {
 		return errors.New("database error")
 	}
+
+	sendUserInactivatedEvent(user.Id)
 
 	*result = true
 	return nil
 }
 
-func startServer() {
+func StartServer() {
 	port, _ := strconv.Atoi(os.Getenv("MYSQL_PORT"))
 	appPort := os.Getenv("APP_PORT")
 

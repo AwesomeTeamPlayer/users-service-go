@@ -20,6 +20,12 @@ Params:
 
 It returns user object.
 
+It pushes users.created event:
+```json{
+    "userId": 1234
+}
+```
+
 ### App.GetUserByEmail
 Params:
 * email (string)
@@ -28,23 +34,49 @@ It returns user object.
 
 ### App.GetUserById
 Params:
-* id (string)
+* id (int)
 
 It returns user object.
 
 ### App.ActiveUser
 Params:
-* id (string)
+* id (int)
 
 It returns true if user was activated. 
 Otherwise returns false (when status wasn't changed).
-z
+
+If user was activated it pushes users.activated event:
+```json{
+    "userId": 1234
+}
+```
+
+### App.UpdateName
+Params:
+* id (int)
+* name (string)
+
+It returns true.
+
+It pushes users.name.updated event:
+```json{
+    "userId": 1234
+}
+```
+
 ### App.InactiveUser
 Params:
-* id (string)
+* id (int)
 
-It returns true if user was unactivated. 
+It returns true if user was inactivated. 
 Otherwise returns false (when status wasn't changed).
+
+
+If user was inactivated it pushes users.inactivated event:
+```json{
+    "userId": 1234
+}
+```
 
 ### App.GetAllUsers
 Params:

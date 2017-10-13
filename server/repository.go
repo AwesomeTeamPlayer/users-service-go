@@ -1,4 +1,4 @@
-package src
+package server
 
 import (
 	"database/sql"
@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strconv"
 	"fmt"
+	"os/user"
 )
 
 var connection *sql.DB
@@ -17,7 +18,7 @@ type UserDraft struct {
 }
 
 type User struct {
-	Id int64
+	Id int
 	Email string
 	Name string
 	IsActive bool
@@ -52,7 +53,7 @@ func insertUser(userDraft *UserDraft) (*User, error) {
 	id, _ := res.LastInsertId()
 
 	return &User{
-		id,
+		int(id),
 		userDraft.Email,
 		userDraft.Name,
 		userDraft.IsActive,
@@ -71,7 +72,7 @@ func getUser(email string) (*User, error) {
 	return &user, nil
 }
 
-func getUserById(id uint) (*User, error) {
+func getUserById(id int) (*User, error) {
 	stmtOut, err := connection.Prepare("SELECT id, email, name, is_active FROM users WHERE id = ?")
 	var user User
 	err = stmtOut.QueryRow(id).Scan(&user.Id, &user.Email, &user.Name, &user.IsActive)
@@ -95,7 +96,18 @@ func countAllUsers() (uint, error) {
 	return count, nil
 }
 
-func updateIsActiveUser(id uint, isActive bool) error {
+func update(user *User) error {
+	stmtOut, err := connection.Prepare("UPDATE users SET name=?, email=?, is_active=? WHERE id=?")
+	_, err = stmtOut.Exec(user.Name, user.Email, user.IsActive, user.Id)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func updateIsActiveUser(id int, isActive bool) error {
 	stmtOut, err := connection.Prepare("UPDATE users SET is_active=? WHERE id=?")
 	_, err = stmtOut.Exec(&isActive, &id)
 	if err != nil {
