@@ -1,14 +1,20 @@
 language: go
 go: '1.9'
 
+stages:
+  - compile
+  - deploy
+
 services:
   - docker
 
-install:
+compile:
   - go get github.com/go-sql-driver/mysql
   - go get github.com/gorilla/mux
   - go get github.com/gorilla/rpc
   - go get github.com/gorilla/rpc/json
   - go get github.com/streadway/amqp
+  - go build -o $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/app github.com/AwesomeTeamPlayer/users-service-go
 
-script: go build -o $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/app github.com/AwesomeTeamPlayer/users-service-go
+deploy:
+  - ls -lh $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/
