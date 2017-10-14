@@ -6,7 +6,6 @@ import (
 	"errors"
 	"strconv"
 	"fmt"
-	"os/user"
 )
 
 var connection *sql.DB
@@ -26,6 +25,9 @@ type User struct {
 
 func connect(host string, port int, user string, password string, database string) *sql.DB {
 	var connectString string = user + ":" + password + "@tcp(" + host + ":" + strconv.Itoa(port) + ")/" + database
+
+	fmt.Println("Try connect to the database: " + connectString)
+
 	db, err := sql.Open("mysql", connectString)
 	if err != nil {
 		panic(err.Error())

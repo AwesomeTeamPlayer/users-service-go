@@ -2,12 +2,28 @@
 
 ## To build:
 ```bash
-go build -o=/app/run ./src/
+go build -o=app
+chmod a+x app
 ```
 
-## To run
+## To run built file
+
+Required ENV variables:
+
+* APP_PORT
+* MYSQL_HOST
+* MYSQL_PORT
+* MYSQL_USER
+* MYSQL_PASSWORD
+* MYSQL_DATABASE
+* RABBIT_HOST
+* RABBIT_PORT
+* RABBIT_USER
+* RABBIT_PASSWORD
+* EXCAHNGE_NAME
+
 ```bash
-/app/run
+./app
 ```
 
 ## Available methods:
@@ -21,7 +37,8 @@ Params:
 It returns user object.
 
 It pushes users.created event:
-```json{
+```json
+{
     "userId": 1234
 }
 ```
@@ -46,7 +63,8 @@ It returns true if user was activated.
 Otherwise returns false (when status wasn't changed).
 
 If user was activated it pushes users.activated event:
-```json{
+```json
+{
     "userId": 1234
 }
 ```
@@ -59,29 +77,31 @@ Params:
 It returns true.
 
 It pushes users.name.updated event:
-```json{
+```json
+{
     "userId": 1234
 }
 ```
 
 ### App.InactiveUser
 Params:
-* id (int)
+* Id (int)
 
 It returns true if user was inactivated. 
 Otherwise returns false (when status wasn't changed).
 
 
 If user was inactivated it pushes users.inactivated event:
-```json{
+```json
+{
     "userId": 1234
 }
 ```
 
 ### App.GetAllUsers
 Params:
-* page (int)
-* limit (int)
+* Page (int)
+* Limit (int)
 
 It returns:
 ```json
@@ -94,16 +114,20 @@ It returns:
 ```
 
 
+## Example:
+
+POST http://localhost:1234/rpc
 ```json
 {
     "id": 12,
     "jsonrpc": "2.0",
-    "method": "Arith.Multiply",
+    "method": "App.GetAllUsers",
     "params": [
         {
-        "A": 2,
-        "B": 23
+        "Page": 0,
+        "Limit": 20
         }
     ]
 }
+
 ```

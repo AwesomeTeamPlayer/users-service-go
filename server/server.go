@@ -6,9 +6,9 @@ import (
 	"github.com/gorilla/rpc"
 	"github.com/gorilla/rpc/json"
 	"net/http"
-	"fmt"
 	"os"
 	"strconv"
+	"fmt"
 )
 
 type EmailRequest struct {
@@ -37,6 +37,7 @@ type GetAllUsersResponse struct {
 type App int
 
 func (t *App) AddUser (r *http.Request, userDraft *UserDraft, result *User) error {
+	fmt.Println("AddUser")
 	user, err := insertUser(userDraft)
 
 	if err != nil {
@@ -45,13 +46,15 @@ func (t *App) AddUser (r *http.Request, userDraft *UserDraft, result *User) erro
 
 	userCreated(user.Id)
 
+	fmt.Println("User added")
 	*result = *user
 	return nil
 }
 
 func (t *App) GetUserByEmail (r *http.Request, emailRequest *EmailRequest, result *User) error {
-	user, err := getUser(emailRequest.Email)
+	fmt.Println("GetUserByEmail")
 
+	user, err := getUser(emailRequest.Email)
 	if err != nil {
 		return errors.New("database error")
 	}
@@ -65,8 +68,9 @@ func (t *App) GetUserByEmail (r *http.Request, emailRequest *EmailRequest, resul
 }
 
 func (t *App) GetUserById (r *http.Request, idRequest *IdRequest, result *User) error {
-	user, err := getUserById(idRequest.Id)
+	fmt.Println("GetUserById")
 
+	user, err := getUserById(idRequest.Id)
 	if err != nil {
 		return errors.New("database error")
 	}
@@ -80,6 +84,7 @@ func (t *App) GetUserById (r *http.Request, idRequest *IdRequest, result *User) 
 }
 
 func (t *App) GetAllUsers (r *http.Request, getAllUsersRequest *GetAllUsersRequest, result *GetAllUsersResponse) error {
+	fmt.Println("GetAllUsers")
 	limit := uint(getAllUsersRequest.Limit)
 	users, err := getAllUsers(uint(getAllUsersRequest.Page * limit), limit)
 	if err != nil {
@@ -96,6 +101,7 @@ func (t *App) GetAllUsers (r *http.Request, getAllUsersRequest *GetAllUsersReque
 }
 
 func (t *App) UpdateName (r *http.Request, request *UpdateUserNameRequest, result *bool) error {
+	fmt.Println("UpdateName")
 	user, err := getUserById(request.Id)
 
 	if err != nil {
@@ -114,12 +120,13 @@ func (t *App) UpdateName (r *http.Request, request *UpdateUserNameRequest, resul
 	}
 
 	sendUserNameUpdatedEvent(user.Id)
-
+	fmt.Println("Name updated")
 	*result = true
 	return nil
 }
 
 func (t *App) ActiveUser (r *http.Request, idRequest *IdRequest, result *bool) error {
+	fmt.Println("ActiveUser")
 	user, err := getUserById(idRequest.Id)
 
 	if err != nil {
@@ -143,11 +150,13 @@ func (t *App) ActiveUser (r *http.Request, idRequest *IdRequest, result *bool) e
 
 	sendUserActivatedEvent(user.Id)
 
+	fmt.Println("user activated")
 	*result = true
 	return nil
 }
 
 func (t *App) InactiveUser (r *http.Request, idRequest *IdRequest, result *bool) error {
+	fmt.Println("InactiveUser")
 	user, err := getUserById(idRequest.Id)
 	if err != nil {
 		return errors.New("database error")
@@ -169,7 +178,7 @@ func (t *App) InactiveUser (r *http.Request, idRequest *IdRequest, result *bool)
 	}
 
 	sendUserInactivatedEvent(user.Id)
-
+	fmt.Println("user inactivated")
 	*result = true
 	return nil
 }

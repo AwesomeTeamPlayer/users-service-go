@@ -1,6 +1,8 @@
-FROM golang:1.9
+FROM alpine:3.6
 
-ADD . ./app
-WORKDIR /app
+RUN mkdir /app
+ADD ./app /app
 
-CMD go run app.go repository.go server.go
+RUN chmod a+x /app/app
+
+CMD /app/app

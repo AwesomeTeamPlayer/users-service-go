@@ -7,6 +7,7 @@ import (
 
 	"github.com/streadway/amqp"
 	"strconv"
+	"os"
 )
 
 func failOnError(err error, msg string) {
@@ -37,7 +38,11 @@ func sendUserInactivatedEvent(id int) {
 }
 
 func publishEvent(body string, routingKey string) {
-	conn, err := amqp.Dial("amqp://guest:guest@rabbit:5672/")
+	var connectString string = "amqp://" + os.Getenv("RABBIT_USER") + ":" + os.Getenv("RABBIT_PASSWORD") + "@" + os.Getenv("RABBIT_HOST") + ":" + os.Getenv("RABBIT_PORT") + "/"
+
+	fmt.Println("Try connect to Rabbit: " + connectString)
+
+	conn, err := amqp.Dial(connectString)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -55,4 +60,5 @@ func publishEvent(body string, routingKey string) {
 			Body:        []byte(body),
 		})
 	failOnError(err, "Failed to publish a message")
+	fmt.Println("Event published")
 }
