@@ -6,7 +6,7 @@ services:
 
 jobs:
   include:
-    - stage: install depeendencies
+    - stage: install dependencies
       script: ./install-dependencies.sh
 
     - stage: build
