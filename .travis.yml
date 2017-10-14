@@ -11,8 +11,8 @@ jobs:
 
     - stage: build and deploy
       script:
-        - go build -o $HOME/app github.com/AwesomeTeamPlayer/users-service-go
-        - ls -lh $HOME
+        - go build -o app github.com/AwesomeTeamPlayer/users-service-go
+        - ls -lh
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker build -t awesometeamplayer/users-service-go .
         - docker images
