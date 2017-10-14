@@ -13,3 +13,8 @@ jobs:
       script:
         - go build -o $HOME/app github.com/AwesomeTeamPlayer/users-service-go
         - ls -lh $HOME
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker build -t awesometeamplayer/users-service-go .
+        - docker images
+#        - docker tag master awesometeamplayer/users-service-go
+        - docker push awesometeamplayer/users-service-go
