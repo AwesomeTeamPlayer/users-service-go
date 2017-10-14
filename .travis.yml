@@ -11,4 +11,4 @@ install:
   - go get github.com/gorilla/rpc/json
   - go get github.com/streadway/amqp
 
-script: go build -o=/app github.com/AwesomeTeamPlayer/users-service-go
+script: go build -o app github.com/AwesomeTeamPlayer/users-service-go
