@@ -9,8 +9,7 @@ jobs:
     - stage: install dependencies
       script: ./install-dependencies.sh
 
-    - stage: build
-      script: echo $(pwd) && go build -o $HOME/app github.com/AwesomeTeamPlayer/users-service-go && ls -lh $HOME
-
-    - stage: deploy
-      script: ls -lh $HOME
+    - stage: build and deploy
+      script:
+        - go build -o $HOME/app github.com/AwesomeTeamPlayer/users-service-go
+        - ls -lh $HOME
