@@ -8,7 +8,7 @@ stages:
 services:
   - docker
 
-compile:
+compile &a:
   - go get github.com/go-sql-driver/mysql
   - go get github.com/gorilla/mux
   - go get github.com/gorilla/rpc
@@ -16,5 +16,5 @@ compile:
   - go get github.com/streadway/amqp
   - go build -o $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/app github.com/AwesomeTeamPlayer/users-service-go
 
-deploy:
+deploy &b:
   - ls -lh $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/
