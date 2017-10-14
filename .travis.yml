@@ -10,7 +10,7 @@ jobs:
       script: ./install-dependencies.sh
 
     - stage: build
-      script: go build -o $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/app github.com/AwesomeTeamPlayer/users-service-go
+      script: go build -o app github.com/AwesomeTeamPlayer/users-service-go && ls -lh
 
     - stage: deploy
-      script: ls -lh $GOPATH/src/github.com/AwesomeTeamPlayer/users-service-go/
+      script: ls -lh
