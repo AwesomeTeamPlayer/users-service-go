@@ -16,4 +16,4 @@ jobs:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker build -t awesometeamplayer/users-service-go:$TRAVIS_BRANCH .
         - docker images
-        - docker push awesometeamplayer/users-service-go:$TRAVIS_BRANCH
+        - docker push awesometeamplayer/users-service-go
