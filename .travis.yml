@@ -14,6 +14,6 @@ jobs:
         - go build -o app github.com/AwesomeTeamPlayer/users-service-go
         - ls -lh
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-        - docker build -t awesometeamplayer/users-service-go:master .
+        - docker build -t awesometeamplayer/users-service-go:$TRAVIS_BRANCH .
         - docker images
-        - docker push awesometeamplayer/users-service-go:master
+        - docker push awesometeamplayer/users-service-go:$TRAVIS_BRANCH
