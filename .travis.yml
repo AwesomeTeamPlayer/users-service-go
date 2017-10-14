@@ -9,5 +9,6 @@ install:
   - go get github.com/gorilla/mux
   - go get github.com/gorilla/rpc
   - go get github.com/gorilla/rpc/json
+  - go get github.com/streadway/amqp
 
 script: go build github.com/AwesomeTeamPlayer/users-service-go -o=app
