@@ -16,11 +16,11 @@ type EmailRequest struct {
 }
 
 type IdRequest struct {
-	Id int
+	Id string
 }
 
 type UpdateUserNameRequest struct {
-	Id int
+	Id string
 	Name string
 }
 

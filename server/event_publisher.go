@@ -1,12 +1,9 @@
 package server
 
-
 import (
 	"fmt"
 	"log"
-
 	"github.com/streadway/amqp"
-	"strconv"
 	"os"
 )
 
@@ -17,24 +14,20 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func userCreated(id int) {
-	s := strconv.Itoa(id)
-	publishEvent("{\"userId\":" + s + "}", "users.created")
+func userCreated(id string) {
+	publishEvent("{\"userId\":\"" + id + "\"}", "users.created")
 }
 
-func sendUserNameUpdatedEvent(id int) {
-	s := strconv.Itoa(id)
-	publishEvent("{\"userId\":" + s + "}", "users.name.updated")
+func sendUserNameUpdatedEvent(id string) {
+	publishEvent("{\"userId\":\"" + id + "\"}", "users.name.updated")
 }
 
-func sendUserActivatedEvent(id int) {
-	s := strconv.Itoa(id)
-	publishEvent("{\"userId\":" + s + "}", "users.activated")
+func sendUserActivatedEvent(id string) {
+	publishEvent("{\"userId\":\"" + id + "\"}", "users.activated")
 }
 
-func sendUserInactivatedEvent(id int) {
-	s := strconv.Itoa(id)
-	publishEvent("{\"userId\":" + s + "}", "users.inactivated")
+func sendUserInactivatedEvent(id string) {
+	publishEvent("{\"userId\":\"" + id + "\"}", "users.inactivated")
 }
 
 func publishEvent(body string, routingKey string) {
@@ -60,5 +53,5 @@ func publishEvent(body string, routingKey string) {
 			Body:        []byte(body),
 		})
 	failOnError(err, "Failed to publish a message")
-	fmt.Println("Event published")
+	fmt.Println("Event published: " + body + " on routing key: " + routingKey)
 }

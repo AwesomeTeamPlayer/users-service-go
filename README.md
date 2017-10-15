@@ -6,6 +6,18 @@ go build -o=app
 chmod a+x app
 ```
 
+## Prepare database:
+```mysql
+create table users(
+  id varchar(10) not null, 
+  name varchar(10) not null, 
+  email varchar(255) not null, 
+  is_active bool not null default false,
+  PRIMARY KEY (id)
+);
+
+```
+
 ## To run built file
 
 Required ENV variables:
@@ -26,6 +38,12 @@ Required ENV variables:
 ./app
 ```
 
+## User object:
+* Id (string, 10 characters)
+* Email (string)
+* Name (string)
+* IsActive (bool)
+
 ## Available methods:
 
 ### App.AddUser
@@ -39,7 +57,7 @@ It returns user object.
 It pushes users.created event:
 ```json
 {
-    "userId": 1234
+    "userId": "ab123"
 }
 ```
 
@@ -51,13 +69,13 @@ It returns user object.
 
 ### App.GetUserById
 Params:
-* id (int)
+* id (string, 10 characters)
 
 It returns user object.
 
 ### App.ActiveUser
 Params:
-* id (int)
+* id (string, 10 characters)
 
 It returns true if user was activated. 
 Otherwise returns false (when status wasn't changed).
@@ -71,7 +89,7 @@ If user was activated it pushes users.activated event:
 
 ### App.UpdateName
 Params:
-* id (int)
+* id (string, 10 characters)
 * name (string)
 
 It returns true.
@@ -119,7 +137,7 @@ It returns:
 POST http://localhost:1234/rpc
 ```json
 {
-    "id": 12,
+    "id": "user_____1",
     "jsonrpc": "2.0",
     "method": "App.GetAllUsers",
     "params": [

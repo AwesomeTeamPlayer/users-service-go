@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strconv"
 	"fmt"
+	"math/rand"
 )
 
 var connection *sql.DB
@@ -17,7 +18,7 @@ type UserDraft struct {
 }
 
 type User struct {
-	Id int
+	Id string
 	Email string
 	Name string
 	IsActive bool
@@ -38,28 +39,43 @@ func connect(host string, port int, user string, password string, database strin
 	return db
 }
 
+func randomString(n int) string {
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
+
 func insertUser(userDraft *UserDraft) (*User, error) {
-	stmtIns, err := connection.Prepare("INSERT INTO users (email, name, is_active) VALUES(?, ?, ?)")
+
+	id := randomString(10)
+
+	fmt.Println(id)
+
+	user := &User{
+		id,
+		userDraft.Email,
+		userDraft.Name,
+		userDraft.IsActive,
+	}
+
+	stmtIns, err := connection.Prepare("INSERT INTO users (id, email, name, is_active) VALUES(?, ?, ?, ?)")
 	if err != nil {
 		fmt.Println(err)
 		return nil, errors.New("database error")
 	}
 
 	defer stmtIns.Close()
-	res, err := stmtIns.Exec(userDraft.Email, userDraft.Name, userDraft.IsActive)
+	_, err = stmtIns.Exec(user.Id, user.Email, user.Name, user.IsActive)
 	if err != nil {
 		fmt.Println(err)
 		return nil, errors.New("user is not unique")
 	}
 
-	id, _ := res.LastInsertId()
-
-	return &User{
-		int(id),
-		userDraft.Email,
-		userDraft.Name,
-		userDraft.IsActive,
-	}, nil
+	return user, nil
 }
 
 func getUser(email string) (*User, error) {
@@ -68,19 +84,19 @@ func getUser(email string) (*User, error) {
 	err = stmtOut.QueryRow(email).Scan(&user.Id, &user.Email, &user.Name, &user.IsActive)
 	if err != nil {
 		fmt.Println(err)
-		return nil, errors.New("database error")
+		return nil, nil
 	}
 
 	return &user, nil
 }
 
-func getUserById(id int) (*User, error) {
+func getUserById(id string) (*User, error) {
 	stmtOut, err := connection.Prepare("SELECT id, email, name, is_active FROM users WHERE id = ?")
 	var user User
 	err = stmtOut.QueryRow(id).Scan(&user.Id, &user.Email, &user.Name, &user.IsActive)
 	if err != nil {
 		fmt.Println(err)
-		return nil, errors.New("database error")
+		return nil, nil
 	}
 
 	return &user, nil
@@ -101,17 +117,6 @@ func countAllUsers() (uint, error) {
 func update(user *User) error {
 	stmtOut, err := connection.Prepare("UPDATE users SET name=?, email=?, is_active=? WHERE id=?")
 	_, err = stmtOut.Exec(user.Name, user.Email, user.IsActive, user.Id)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	return nil
-}
-
-func updateIsActiveUser(id int, isActive bool) error {
-	stmtOut, err := connection.Prepare("UPDATE users SET is_active=? WHERE id=?")
-	_, err = stmtOut.Exec(&isActive, &id)
 	if err != nil {
 		fmt.Println(err)
 		return err
